@@ -12,7 +12,6 @@ const totalSlides = 3;
 // Fetch featured products from Firestore
 async function fetchFeaturedProducts() {
     try {
-        console.log('📦 Fetching featured products from Firestore...');
         const q = query(collection(db, 'products'), limit(8));
         const querySnapshot = await getDocs(q);
         products = [];
@@ -24,10 +23,8 @@ async function fetchFeaturedProducts() {
             });
         });
         
-        console.log(`✅ Loaded ${products.length} featured products`);
         return products;
     } catch (error) {
-        console.error('❌ Error fetching products:', error);
         showToast('Failed to load products', 'error');
         throw error;
     }

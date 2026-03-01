@@ -41,14 +41,10 @@ export function setupAuthObserver() {
             if (userNameDisplay) {
                 userNameDisplay.textContent = user.displayName || user.email.split('@')[0];
             }
-            console.log('👤 User signed in:', user.email);
         } else {
             // User is signed out
             if (authLink) authLink.classList.remove('hidden');
             if (profileLink) profileLink.classList.add('hidden');
-            console.log('👤 No user signed in');
         }
     });
 }
-
-console.log('✅ Firebase initialized successfully');
