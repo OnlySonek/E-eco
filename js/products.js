@@ -55,10 +55,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         await fetchProducts();
         
+        // Get parameters from URL
         const urlCategory = getUrlParameter('category');
         if (urlCategory) {
             currentCategory = urlCategory;
             updateActiveFilter(urlCategory);
+            // Clean URL - remove query parameters
+            window.history.replaceState({}, '', 'products.html');
         }
         
         const urlSearch = getUrlParameter('search');
@@ -68,6 +71,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (searchInput) {
                 searchInput.value = urlSearch;
             }
+            // Clean URL - remove query parameters
+            window.history.replaceState({}, '', 'products.html');
         }
         
         renderProducts();
@@ -92,6 +97,8 @@ function setupEventListeners() {
         searchInput.addEventListener('input', (e) => {
             searchTerm = e.target.value.toLowerCase();
             renderProducts();
+            // Clean URL when searching
+            window.history.replaceState({}, '', 'products.html');
             console.log(`🔍 Search: "${searchTerm}" - ${filterProducts().length} results`);
         });
     }
@@ -103,6 +110,8 @@ function setupEventListeners() {
             filterButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderProducts();
+            // Clean URL when filtering
+            window.history.replaceState({}, '', 'products.html');
             console.log(`📂 Filter: ${categories[currentCategory]} - ${filterProducts().length} products`);
         });
     });
@@ -234,6 +243,8 @@ window.resetFilters = function() {
         }
     });
     
+    // Clean URL
+    window.history.replaceState({}, '', 'products.html');
     renderProducts();
 };
 

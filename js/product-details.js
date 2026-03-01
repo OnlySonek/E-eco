@@ -44,6 +44,9 @@ async function loadProductDetails() {
             // Get product index for correct image
             await getProductIndex(currentProduct.category, currentProduct.id);
             
+            // Clean URL - remove query parameters
+            window.history.replaceState({}, '', 'product-details.html');
+            
             console.log('✅ Product loaded:', currentProduct.name);
             renderProductDetails();
         } else {

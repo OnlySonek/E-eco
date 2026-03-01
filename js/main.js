@@ -58,6 +58,7 @@ export function setupGlobalSearch() {
 
     function handleSearch(searchTerm) {
         if (searchTerm.trim()) {
+            // Navigate to products page without showing search in URL
             window.location.href = `products.html?search=${encodeURIComponent(searchTerm)}`;
         }
     }
