@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 اختبار نظام الإيميل - EmailJS Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .test-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            margin: 50px auto;
+        }
+        .status-box {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .success { background: #10b981; color: white; }
+        .error { background: #ef4444; color: white; }
+        .info { background: #3b82f6; color: white; }
+        .warning { background: #f59e0b; color: white; }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .config-info {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .step {
+            background: #eff6ff;
+            padding: 15px;
+            border-left: 4px solid #3b82f6;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1 style="text-align: center; color: #667eea; font-size: 32px; margin-bottom: 10px;">
+            🧪 اختبار نظام الإيميل
+        </h1>
+        <p style="text-align: center; color: #6b7280; margin-bottom: 30px;">
+            EmailJS Integration Test
+        </p>
+
+        <!-- Configuration Info -->
+        <div class="config-info">
+            <strong>📋 الإعدادات الحالية:</strong><br>
+            Public Key: <span id="showPublicKey">...</span><br>
+            Service ID: <span id="showServiceId">...</span><br>
+            Template ID: <span id="showTemplateId">...</span><br>
+            Target Email: abdelrhmansherif140@gmail.com
+        </div>
+
+        <!-- Test Form -->
+        <form id="testForm">
+            <div style="margin: 20px 0;">
+                <label style="font-weight: bold; color: #374151;">الاسم:</label>
+                <input type="text" id="testName" value="Test User" required>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <label style="font-weight: bold; color: #374151;">الإيميل:</label>
+                <input type="email" id="testEmail" value="test@example.com" required>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <label style="font-weight: bold; color: #374151;">الموضوع:</label>
+                <input type="text" id="testSubject" value="Test Message from EmailJS" required>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <label style="font-weight: bold; color: #374151;">الرسالة:</label>
+                <textarea id="testMessage" rows="4" required>This is a test message to verify that EmailJS integration is working correctly. If you receive this email, the system is functioning properly! 🎉</textarea>
+            </div>
+
+            <button type="submit" class="btn" id="sendBtn">
+                📧 إرسال رسالة تجريبية
+            </button>
+        </form>
+
+        <!-- Status Display -->
+        <div id="statusDisplay"></div>
+
+        <!-- Instructions -->
+        <div class="step" style="margin-top: 30px;">
+            <strong>📝 خطوات الاختبار:</strong><br>
+            1️⃣ تأكد من الإعدادات أعلاه<br>
+            2️⃣ اضغط "إرسال رسالة تجريبية"<br>
+            3️⃣ انتظر رسالة النجاح<br>
+            4️⃣ تحقق من Gmail: abdelrhmansherif140@gmail.com
+        </div>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <script>
+        // ============================================
+        // 📧 EmailJS Configuration
+        // ============================================
+        
+        const PUBLIC_KEY = "9iZTJo2XIqEpCUS4s";
+        const SERVICE_ID = "service_8w7yjgd";
+        const TEMPLATE_ID = "template_e84dwaf"; // ✅ Template ID الصحيح
+        
+        // Display configuration
+        document.getElementById('showPublicKey').textContent = PUBLIC_KEY;
+        document.getElementById('showServiceId').textContent = SERVICE_ID;
+        document.getElementById('showTemplateId').textContent = TEMPLATE_ID;
+        
+        // Initialize EmailJS
+        try {
+            emailjs.init(PUBLIC_KEY);
+            showStatus('✅ EmailJS تم تهيئته بنجاح', 'success');
+        } catch (error) {
+            showStatus('❌ فشل تهيئة EmailJS: ' + error.message, 'error');
+        }
+        
+        // ============================================
+        // Form Handler
+        // ============================================
+        
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '⏳ جاري الإرسال...';
+            
+            showStatus('📤 جاري إرسال الرسالة...', 'info');
+            
+            const name = document.getElementById('testName').value;
+            const email = document.getElementById('testEmail').value;
+            const subject = document.getElementById('testSubject').value;
+            const message = document.getElementById('testMessage').value;
+            
+            try {
+                // Prepare template parameters
+                const templateParams = {
+                    from_name: name,
+                    from_email: email,
+                    subject: subject,
+                    message: message,
+                    to_email: 'abdelrhmansherif140@gmail.com',
+                    reply_to: email
+                };
+                
+                console.log('📋 Template Parameters:', templateParams);
+                
+                // Send email
+                const response = await emailjs.send(
+                    SERVICE_ID,
+                    TEMPLATE_ID,
+                    templateParams
+                );
+                
+                console.log('✅ Response:', response);
+                
+                if (response.status === 200) {
+                    showStatus(
+                        '✅ تم إرسال الرسالة بنجاح!<br><br>' +
+                        '📧 تم الإرسال إلى: abdelrhmansherif140@gmail.com<br>' +
+                        '📨 Status: ' + response.status + '<br>' +
+                        '📝 Text: ' + response.text + '<br><br>' +
+                        '🎉 تحقق من Gmail الآن!',
+                        'success'
+                    );
+                    
+                    // Show alert
+                    alert(
+                        '✅ نجح الاختبار!\n\n' +
+                        'تم إرسال الرسالة بنجاح إلى:\n' +
+                        'abdelrhmansherif140@gmail.com\n\n' +
+                        'تحقق من صندوق الوارد في Gmail!'
+                    );
+                } else {
+                    throw new Error('Unexpected status: ' + response.status);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                
+                let errorMsg = '❌ فشل إرسال الرسالة!<br><br>';
+                errorMsg += '📋 تفاصيل الخطأ:<br>';
+                errorMsg += error.message + '<br><br>';
+                
+                // Analyze error
+                if (error.message.includes('Public Key')) {
+                    errorMsg += '🔑 المشكلة: Public Key غير صحيح';
+                } else if (error.message.includes('Service')) {
+                    errorMsg += '🔧 المشكلة: Service ID غير صحيح';
+                } else if (error.message.includes('Template')) {
+                    errorMsg += '📝 المشكلة: Template ID غير صحيح';
+                } else if (error.message.includes('Network')) {
+                    errorMsg += '🌐 المشكلة: مشكلة في الاتصال';
+                } else {
+                    errorMsg += '❓ خطأ غير معروف';
+                }
+                
+                showStatus(errorMsg, 'error');
+                
+                alert(
+                    '❌ فشل الاختبار!\n\n' +
+                    'الخطأ: ' + error.message + '\n\n' +
+                    'تحقق من الإعدادات في contact.html'
+                );
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '📧 إرسال رسالة تجريبية';
+            }
+        });
+        
+        // ============================================
+        // Helper Functions
+        // ============================================
+        
+        function showStatus(message, type) {
+            const statusDisplay = document.getElementById('statusDisplay');
+            statusDisplay.innerHTML = `<div class="status-box ${type}">${message}</div>`;
+        }
+    </script>
+</body>
+</html>
