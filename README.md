@@ -1,6 +1,6 @@
 # 🛒 Media E-Commerce Store
 
-Modern e-commerce website with Firebase backend.
+A modern, feature-rich e-commerce platform bend.
 
 ## 🚀 Features
 

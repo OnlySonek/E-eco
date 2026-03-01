@@ -36,8 +36,18 @@ function setupContactForm() {
             const emailSent = await sendEmailViaEmailJS(name, email, subject, message);
             
             if (emailSent) {
-                // ✅ Alert نجاح
-                alert('✅ تم إرسال الرسالة بنجاح!\n\nEmail sent successfully to:\nabdelrhmansherif140@gmail.com\n\nسنرد عليك في أقرب وقت');
+                // ✅ Custom Alert نجاح
+                if (typeof customAlert === 'function') {
+                    customAlert(
+                        '✅ تم إرسال الرسالة بنجاح!<br><br>' +
+                        'Email sent successfully to:<br>' +
+                        '<strong>abdelrhmansherif140@gmail.com</strong><br><br>' +
+                        'سنرد عليك في أقرب وقت',
+                        'success'
+                    );
+                } else {
+                    alert('✅ تم إرسال الرسالة بنجاح!\n\nEmail sent successfully to:\nabdelrhmansherif140@gmail.com\n\nسنرد عليك في أقرب وقت');
+                }
                 
                 // Also save to Firestore for backup
                 try {
@@ -106,7 +116,12 @@ function setupContactForm() {
             
             errorDetails += '\n\n📧 أو تواصل معنا مباشرة:\nabdelrhmansherif140@gmail.com';
             
-            alert(errorDetails);
+            // ✅ Custom Alert للخطأ
+            if (typeof customAlert === 'function') {
+                customAlert(errorDetails.replace(/\n/g, '<br>'), 'error');
+            } else {
+                alert(errorDetails);
+            }
             
             // Show error message
             formStatus.classList.remove('hidden');

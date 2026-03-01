@@ -12,12 +12,13 @@
 ## CSS (1)
 - css/style.css
 
-## JavaScript (16)
+## JavaScript (17)
 - js/animations.js
 - js/auth.js
 - js/cart.js
 - js/config.js
 - js/contact.js
+- js/custom-alert.js ⭐ NEW
 - js/firebase-init.js
 - js/home.js
 - js/i18n.js
@@ -39,6 +40,11 @@
 ## Components (1)
 - components/navbar.html
 
-## Total: 29 files
+## Total: 31 files
+
+Features:
+- ✅ Custom Alert System (Beautiful UI)
+- ✅ Git Commands Guide
+- ✅ Clean and production-ready
 
 Clean and production-ready! 🚀
