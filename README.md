@@ -1,193 +1,174 @@
-# Media - Advanced Multi-Page E-commerce Platform
+# 🛒 Media E-Commerce Store
 
-A fully functional, modern e-commerce platform built with HTML5, Tailwind CSS, Vanilla JavaScript ES6 Modules, and Firebase.
+Modern e-commerce website built with vanilla JavaScript, Firebase, and Tailwind CSS.
 
 ## 🚀 Features
 
-### Multi-Page Architecture
-- **Home Page** - Hero carousel with featured products
-- **Products Page** - Full catalog with instant search and filters
-- **Product Details** - Dynamic product pages with quantity selector
-- **Shopping Cart** - Full cart management with localStorage persistence
-- **Authentication** - Login/Register with multiple providers
-- **Profile Page** - User dashboard with order history placeholder
+### Core Features
+- 🛍️ Product catalog with categories
+- 🛒 Shopping cart functionality
+- 👤 User authentication (Firebase Auth)
+- 💳 Order management
+- 📧 Contact form with EmailJS integration
+- 🔍 Product search
+- 📱 Fully responsive design
 
-### Advanced Functionality
-- ✅ **Instant Search** - Real-time product filtering as you type
-- ✅ **Category Filters** - Filter by Laptops, Monitors, Keyboards, Mice, Headsets
-- ✅ **Dynamic Routing** - URL parameters for product details
-- ✅ **Quantity Selector** - Adjust quantities before adding to cart
-- ✅ **Toast Notifications** - User-friendly feedback messages
-- ✅ **Cart Persistence** - Cart saved in localStorage
-- ✅ **Cart Counter** - Live cart item count in navbar
-- ✅ **Price Calculations** - Subtotal, tax (10%), and total
-
-### Authentication
-- Email/Password registration and login
-- Google Sign-In
-- Facebook Login
-- GitHub Login
-- Protected profile page
-- Auto-redirect after login
-
-### Design
-- Dark theme with Slate-950 background
-- Blue-500 accent colors
-- Fully responsive (Mobile/Tablet/Desktop)
-- Smooth transitions and hover effects
-- Modern card-based UI
+### Technical Features
+- 🎨 Pure CSS animations (no GSAP)
+- 🌓 Dark/Light mode toggle
+- 🌍 Multi-language support (Arabic/English)
+- 🖼️ Lazy loading for images
+- 🔒 Advanced security features
+- 🔥 Firebase Firestore database
+- ⚡ Fast and optimized
 
 ## 📁 Project Structure
 
 ```
-media-ecommerce/
-├── index.html              # Home page
-├── products.html           # Products listing
+├── index.html              # Homepage
+├── products.html           # Products page
 ├── product-details.html    # Product details
 ├── cart.html              # Shopping cart
-├── auth.html              # Authentication
+├── auth.html              # Login/Register
 ├── profile.html           # User profile
+├── contact.html           # Contact form
 ├── css/
-│   └── style.css          # Custom styles
+│   └── style.css          # Main styles
 ├── js/
-│   ├── config.js          # Configuration & data
-│   ├── firebase-init.js   # Firebase setup
-│   ├── utils.js           # Utility functions
-│   ├── home.js            # Home page module
-│   ├── products.js        # Products page module
-│   ├── product-details.js # Product details module
-│   ├── cart.js            # Cart module
-│   ├── auth.js            # Authentication module
-│   └── profile.js         # Profile module
-├── FIREBASE_SETUP.md      # Firebase configuration guide
-└── README.md              # This file
+│   ├── main.js            # Main app logic
+│   ├── auth.js            # Authentication
+│   ├── cart.js            # Cart functionality
+│   ├── products.js        # Products display
+│   ├── contact.js         # Contact form
+│   ├── i18n.js            # Internationalization
+│   ├── animations.js      # CSS animations
+│   ├── lazy-loading.js    # Image lazy loading
+│   ├── security.js        # Security features
+│   ├── firebase-init.js   # Firebase config
+│   └── config.js          # App configuration
+└── firestore.rules        # Firestore security rules
 ```
 
-## 🛠️ Setup Instructions
+## 🔧 Setup
 
-### 1. Clone or Download
-Download all files to your local machine.
+### 1. Firebase Configuration
 
-### 2. Configure Firebase
-Follow the detailed instructions in `FIREBASE_SETUP.md` to:
-- Create a Firebase project
-- Enable authentication providers
-- Get your Firebase configuration
-- Update `js/config.js` with your credentials
-
-### 3. Run the Application
-Open `index.html` in a modern web browser, or use a local server:
-
-```bash
-# Using Python
-python -m http.server 8000
-
-# Using Node.js
-npx http-server
-
-# Using PHP
-php -S localhost:8000
-```
-
-Then navigate to `http://localhost:8000`
-
-## 🎯 Usage
-
-### Shopping Flow
-1. Browse featured products on home page
-2. Click "View All Products" or navigate to Products page
-3. Use instant search or category filters to find items
-4. Click a product card to view details
-5. Select quantity and add to cart
-6. View cart and adjust quantities
-7. Proceed to checkout (placeholder)
-
-### Authentication Flow
-1. Click "Login" in navbar
-2. Register a new account or sign in
-3. Use email/password or social login
-4. Redirected to profile page
-5. View profile information
-6. Sign out when done
-
-## 🔧 Customization
-
-### Adding Products
-Edit `js/config.js` and add items to the `products` array:
-
+Create `js/config.js`:
 ```javascript
-{
-    id: 25,
-    name: "Product Name",
-    category: "laptop", // laptop, mouse, keyboard, monitor, headset
-    price: 999,
-    image: "https://example.com/image.jpg",
-    description: "Product description"
-}
+export const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
 ```
 
-### Changing Colors
-Update Tailwind classes in HTML files:
-- Background: `bg-slate-950` → `bg-gray-900`
-- Accent: `bg-blue-600` → `bg-purple-600`
-- Text: `text-blue-500` → `text-green-500`
+### 2. EmailJS Configuration
 
-### Modifying Tax Rate
-Edit `js/utils.js` in the `calculateTotals()` function:
-
+Update in `contact.html`:
 ```javascript
-const tax = subtotal * 0.1; // Change 0.1 to your tax rate
+const PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+window.EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
+window.EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
 ```
 
-## 🔒 Security Best Practices
+### 3. Firestore Rules
 
-1. Never commit Firebase credentials to public repositories
-2. Add your domain to Firebase authorized domains
-3. Implement Firestore security rules for production
-4. Use environment variables for sensitive data
-5. Enable Firebase App Check for additional security
+Deploy the security rules from `firestore.rules` to your Firebase project.
 
-## 📱 Browser Compatibility
+### 4. Admin Setup
 
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+See `🔑_MAKE_ADMIN_GUIDE.md` for instructions on creating admin users.
 
-Requires ES6 module support.
+## 📚 Documentation
+
+- `📧_EMAIL_SETUP_GUIDE.md` - EmailJS integration guide
+- `📸_LAZY_LOADING_GUIDE.md` - Image lazy loading implementation
+- `🔒_SECURITY_GUIDE.md` - Security features documentation
+- `🔥_FIRESTORE_RULES_GUIDE.md` - Firestore security rules
+- `🔑_MAKE_ADMIN_GUIDE.md` - Admin user setup
+- `PRODUCTS_DATABASE_GUIDE.md` - Products database structure
+- `UPLOAD_INSTRUCTIONS.md` - Product upload instructions
+
+## 🎨 Features Details
+
+### Animations
+- Pure CSS animations (no JavaScript libraries)
+- Smooth transitions and effects
+- Performance optimized
+- Dark/Light mode compatible
+
+### Security
+- Console protection
+- DevTools detection
+- Right-click disabled
+- Text selection disabled
+- API key obfuscation
+- Firestore security rules
+
+### Internationalization
+- Arabic and English support
+- RTL layout for Arabic
+- Language switcher
+- Persistent language preference
+
+### Lazy Loading
+- Images load on scroll
+- Shimmer placeholder effect
+- Bandwidth optimization
+- Smooth fade-in animation
 
 ## 🚀 Deployment
 
 ### Firebase Hosting
+
+1. Install Firebase CLI:
+```bash
+npm install -g firebase-tools
+```
+
+2. Login to Firebase:
+```bash
+firebase login
+```
+
+3. Initialize project:
 ```bash
 firebase init hosting
+```
+
+4. Deploy:
+```bash
 firebase deploy
 ```
 
-### Netlify
-1. Drag and drop project folder to Netlify
-2. Site will be live instantly
+## 📱 Browser Support
 
-### Vercel
-```bash
-vercel
-```
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+- Mobile browsers
 
-## 📝 License
+## 🔐 Security Notes
 
-This project is open source and available for educational purposes.
+- Never commit `js/config.js` with real credentials
+- Use environment variables for sensitive data
+- Keep Firebase security rules updated
+- Regularly review user permissions
 
-## 🤝 Contributing
+## 📞 Contact
 
-Feel free to fork, modify, and use this project for your own purposes.
+- Email: abdelrhmansherif140@gmail.com
+- Phone: +20 115 023 8481
+- Location: Giza, Cairo, Egypt
 
-## 📧 Support
+## 📄 License
 
-For issues or questions, refer to:
-- Firebase Documentation: https://firebase.google.com/docs
-- Tailwind CSS: https://tailwindcss.com/docs
-- MDN Web Docs: https://developer.mozilla.org
+This project is private and proprietary.
 
 ---
 
-Built with ❤️ using modern web technologies
+**Built with ❤️ by Kiro AI**
