@@ -17,7 +17,7 @@
     <nav class="navbar-glass">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
-                <a href="index.html" class="flex items-center space-x-2">
+                <a href="index.html" class="flex items-center space-x-2 mx-5">
                     <div class="logo-icon">
                         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
@@ -242,6 +242,15 @@
         </div>
     </div>
 
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS
+        (function(){
+            emailjs.init("YOUR_PUBLIC_KEY"); // سنضيف المفتاح لاحقاً
+        })();
+    </script>
+    
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/contact.js"></script>
 </body>

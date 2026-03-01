@@ -1,4 +1,4 @@
-// Home Page Module - Firestore Integration
+// Home Page Module - Firestore Integration with Lazy Loading
 import { collection, getDocs, limit, query } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { db, setupAuthObserver } from './firebase-init.js';
 import { updateCartCounter } from './main.js';
@@ -34,6 +34,12 @@ async function fetchFeaturedProducts() {
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         console.log('🏠 Initializing home page...');
+        
+        // Initialize animations if available
+        if (typeof window.initAnimations === 'function') {
+            window.initAnimations();
+        }
+        
         setupAuthObserver();
         updateCartCounter();
         
@@ -47,6 +53,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         await fetchFeaturedProducts();
         renderFeaturedProducts();
         
+        // Setup product hover animations after rendering
+        setTimeout(() => {
+            if (typeof window.setupProductHoverAnimations === 'function') {
+                window.setupProductHoverAnimations();
+            }
+            if (typeof window.animateProducts === 'function') {
+                window.animateProducts();
+            }
+        }, 100);
+        
         startCarousel();
         console.log('✅ Home page initialized successfully');
     } catch (error) {
@@ -58,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Render featured products (first 8 products)
+// Render featured products with lazy loading
 function renderFeaturedProducts() {
     const container = document.getElementById('featuredProducts');
     if (!container) return;
@@ -74,11 +90,23 @@ function renderFeaturedProducts() {
         const imageUrl = getProductImage(product.category.toLowerCase(), index);
         return `
             <div class="product-card cursor-pointer" onclick="window.location.href='product-details.html?id=${product.id}'">
-                <img src="${imageUrl}" alt="${product.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=800'">
+                <div class="product-image-wrapper">
+                    <div class="product-image-placeholder">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <img 
+                        data-src="${imageUrl}" 
+                        alt="${product.name}" 
+                        class="lazy-loading"
+                        onerror="this.src='https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=800'"
+                    >
+                </div>
                 <div class="product-card-content">
                     <h3 class="text-lg font-semibold mb-2">${product.name}</h3>
-                    <div class="price text-xl font-bold text-blue-400 mb-3">$${product.price.toLocaleString()}</div>
-                    <button onclick="event.stopPropagation(); addToCartFromHome('${product.id}')" class="w-full mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition font-medium">
+                    <div class="price text-xl font-bold text-blue-400 mb-3">${product.price.toLocaleString()}</div>
+                    <button onclick="event.stopPropagation(); addToCartFromHome('${product.id}')" class="w-full mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition font-medium" data-i18n="products.addtocart">
                         Add to Cart
                     </button>
                 </div>
@@ -86,7 +114,72 @@ function renderFeaturedProducts() {
         `;
     }).join('');
     
-    console.log(`✅ Rendered ${featured.length} products`);
+    // Initialize lazy loading
+    initLazyLoading();
+    
+    console.log(`✅ Rendered ${featured.length} products with lazy loading`);
+}
+
+// Lazy Loading Implementation
+function initLazyLoading() {
+    const images = document.querySelectorAll('img.lazy-loading');
+    
+    if ('IntersectionObserver' in window) {
+        // Modern browsers - use IntersectionObserver
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    loadImage(img);
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '50px' // Start loading 50px before image enters viewport
+        });
+        
+        images.forEach(img => imageObserver.observe(img));
+    } else {
+        // Fallback for older browsers
+        images.forEach(img => loadImage(img));
+    }
+}
+
+function loadImage(img) {
+    const src = img.getAttribute('data-src');
+    if (!src) return;
+    
+    // Create a new image to preload
+    const tempImg = new Image();
+    
+    tempImg.onload = function() {
+        img.src = src;
+        img.classList.remove('lazy-loading');
+        img.classList.add('lazy-loaded');
+        
+        // Hide placeholder
+        const placeholder = img.previousElementSibling;
+        if (placeholder && placeholder.classList.contains('product-image-placeholder')) {
+            placeholder.style.opacity = '0';
+            setTimeout(() => {
+                placeholder.style.display = 'none';
+            }, 500);
+        }
+    };
+    
+    tempImg.onerror = function() {
+        // Fallback image on error
+        img.src = 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=800';
+        img.classList.remove('lazy-loading');
+        img.classList.add('lazy-loaded');
+        
+        const placeholder = img.previousElementSibling;
+        if (placeholder && placeholder.classList.contains('product-image-placeholder')) {
+            placeholder.style.display = 'none';
+        }
+    };
+    
+    tempImg.src = src;
 }
 
 // Carousel functions

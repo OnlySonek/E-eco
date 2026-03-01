@@ -9,27 +9,40 @@ body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Add padding to main content, not body */
+body > section:first-of-type,
+body > nav + section {
+    margin-top: 80px;
+}
+
 /* Glassmorphism Navbar */
 .navbar-glass {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
-    background: rgba(15, 23, 42, 0.8);
+    z-index: 9999 !important;
+    background: rgba(15, 23, 42, 0.95) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(148, 163, 184, 0.1);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
 }
 
 /* Navigation Links */
 .nav-link {
-    color: #e2e8f0;
+    color: #e2e8f0 !important;
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
     padding: 0.5rem 0;
+    display: inline-block;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .nav-link:hover {
@@ -90,6 +103,9 @@ body {
     color: #e2e8f0;
     transition: all 0.3s ease;
     border-radius: 0.5rem;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
 }
 
 .nav-icon-btn:hover {
@@ -207,6 +223,103 @@ body {
     width: 100%;
     height: 220px;
     object-fit: cover;
+}
+
+/* Lazy Loading Placeholder */
+.product-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    overflow: hidden;
+}
+
+.product-image-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    animation: shimmerPlaceholder 2s infinite;
+}
+
+.product-image-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(59, 130, 246, 0.1) 50%,
+        transparent 100%
+    );
+    animation: shimmerMove 2s infinite;
+}
+
+.product-image-placeholder svg {
+    width: 64px;
+    height: 64px;
+    color: #475569;
+    z-index: 1;
+}
+
+@keyframes shimmerPlaceholder {
+    0%, 100% {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    }
+    50% {
+        background: linear-gradient(135deg, #334155 0%, #475569 100%);
+    }
+}
+
+@keyframes shimmerMove {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.product-card img.lazy-loading {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.product-card img.lazy-loaded {
+    opacity: 1;
+}
+
+/* Light Mode Placeholder */
+body.light-mode .product-image-wrapper {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+body.light-mode .product-image-placeholder {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+body.light-mode .product-image-placeholder::before {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(59, 130, 246, 0.15) 50%,
+        transparent 100%
+    );
+}
+
+body.light-mode .product-image-placeholder svg {
+    color: #cbd5e1;
+}
+
+@keyframes shimmerPlaceholderLight {
+    0%, 100% {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+    50% {
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    }
 }
 
 .product-card-content {
@@ -491,9 +604,11 @@ body.light-mode li {
     color: #0f172a;
 }
 
+/* Light Mode Navbar */
 body.light-mode .navbar-glass {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.95) !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 body.light-mode .nav-link {
@@ -502,6 +617,25 @@ body.light-mode .nav-link {
 
 body.light-mode .nav-link:hover {
     color: #3b82f6 !important;
+}
+
+body.light-mode .nav-icon-btn {
+    color: #0f172a !important;
+}
+
+body.light-mode .nav-icon-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6 !important;
+}
+
+body.light-mode .logo-icon svg {
+    filter: brightness(0.9);
+}
+
+body.light-mode .search-input {
+    background: rgba(241, 245, 249, 0.9) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #0f172a !important;
 }
 
 body.light-mode .product-card {
@@ -643,4 +777,689 @@ body.light-mode .carousel-dot:hover {
 body.light-mode .carousel-dot.active {
     background: #3b82f6;
     border-color: #3b82f6;
+}
+
+
+/* RTL Support for Arabic */
+[dir="rtl"] {
+    direction: rtl;
+}
+
+[dir="rtl"] .navbar-glass .flex {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .space-x-8 > * + * {
+    margin-left: 0;
+    margin-right: 2rem;
+}
+
+[dir="rtl"] .space-x-4 > * + * {
+    margin-left: 0;
+    margin-right: 1rem;
+}
+
+[dir="rtl"] .space-x-2 > * + * {
+    margin-left: 0;
+    margin-right: 0.5rem;
+}
+
+[dir="rtl"] .nav-link::after {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .search-icon {
+    right: auto;
+    left: 1rem;
+}
+
+[dir="rtl"] .search-input {
+    padding: 0.75rem 1rem 0.75rem 3rem;
+}
+
+[dir="rtl"] .cart-badge {
+    right: auto;
+    left: -4px;
+}
+
+[dir="rtl"] .mobile-menu-link:hover {
+    padding-left: 1rem;
+    padding-right: 1.5rem;
+}
+
+[dir="rtl"] .text-left {
+    text-align: right;
+}
+
+[dir="rtl"] .text-right {
+    text-align: left;
+}
+
+/* Smooth animations for language switch */
+* {
+    transition: margin 0.3s ease, padding 0.3s ease;
+}
+
+/* Enhanced product card animations */
+.product-card {
+    transform-style: preserve-3d;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.product-card:hover {
+    transform: translateY(-10px) scale(1.02);
+}
+
+.product-card img {
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.1);
+}
+
+/* Category card animations */
+.category-card {
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.3);
+}
+
+/* Hero content animation */
+.hero-content {
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Floating animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.logo-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text animation */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.bg-gradient-to-r {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+/* Button ripple effect */
+.auth-btn,
+.product-card button {
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-btn::before,
+.product-card button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.auth-btn:active::before,
+.product-card button:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Loading animation */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.loading-shimmer {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(to right, #1e293b 0%, #334155 20%, #1e293b 40%, #1e293b 100%);
+    background-size: 1000px 100%;
+}
+
+
+/* ============================================
+   🎨 AMAZING CSS ANIMATIONS
+   ============================================ */
+
+/* Navbar Slide Down Animation */
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.navbar-glass {
+    animation: slideDown 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Nav Links Fade In */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nav-link {
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-delay: calc(var(--delay) * 0.1s);
+}
+
+.nav-link:nth-child(1) { --delay: 1; }
+.nav-link:nth-child(2) { --delay: 2; }
+.nav-link:nth-child(3) { --delay: 3; }
+.nav-link:nth-child(4) { --delay: 4; }
+.nav-link:nth-child(5) { --delay: 5; }
+
+/* Icon Buttons Pop In */
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.nav-icon-btn {
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+.nav-icon-btn:nth-of-type(1) { animation-delay: 0.5s; }
+.nav-icon-btn:nth-of-type(2) { animation-delay: 0.6s; }
+.nav-icon-btn:nth-of-type(3) { animation-delay: 0.7s; }
+
+/* Logo Float Animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.logo-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient Animation */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.bg-gradient-to-r {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+/* Product Card Entrance */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.product-card {
+    animation: slideInUp 0.6s ease-out forwards;
+    animation-delay: calc(var(--card-delay) * 0.1s);
+    opacity: 0;
+}
+
+.product-card:nth-child(1) { --card-delay: 1; }
+.product-card:nth-child(2) { --card-delay: 2; }
+.product-card:nth-child(3) { --card-delay: 3; }
+.product-card:nth-child(4) { --card-delay: 4; }
+.product-card:nth-child(5) { --card-delay: 5; }
+.product-card:nth-child(6) { --card-delay: 6; }
+.product-card:nth-child(7) { --card-delay: 7; }
+.product-card:nth-child(8) { --card-delay: 8; }
+
+/* Product Card Hover - 3D Effect */
+.product-card {
+    transform-style: preserve-3d;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.product-card:hover {
+    transform: translateY(-15px) rotateX(5deg) scale(1.05);
+    box-shadow: 0 30px 60px rgba(59, 130, 246, 0.4);
+}
+
+.product-card img {
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.15) rotate(2deg);
+}
+
+/* Category Card Animation */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5) rotate(-5deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.category-card {
+    animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation-delay: calc(var(--cat-delay) * 0.1s);
+    opacity: 0;
+}
+
+.bg-slate-800:nth-child(1) { --cat-delay: 1; }
+.bg-slate-800:nth-child(2) { --cat-delay: 2; }
+.bg-slate-800:nth-child(3) { --cat-delay: 3; }
+.bg-slate-800:nth-child(4) { --cat-delay: 4; }
+
+/* Category Hover Effect */
+.category-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.category-card:hover::before {
+    left: 100%;
+}
+
+.category-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+}
+
+/* Hero Section Animation */
+@keyframes heroFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#heroCarousel {
+    animation: heroFadeIn 1s ease-out;
+}
+
+/* Hero Content Animation */
+.hero-content h1 {
+    animation: fadeInUp 1s ease-out 0.3s backwards;
+}
+
+.hero-content p {
+    animation: fadeInUp 1s ease-out 0.5s backwards;
+}
+
+.hero-content a {
+    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.7s backwards;
+}
+
+/* Cart Badge Pulse */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+}
+
+.cart-badge {
+    animation: pulse 2s infinite;
+}
+
+/* Button Ripple Effect */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.auth-btn,
+.product-card button {
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-btn::after,
+.product-card button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.auth-btn:active::after,
+.product-card button:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Smooth Hover Transitions */
+.nav-link,
+.nav-icon-btn,
+.auth-btn,
+.product-card,
+.category-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Section Title Animation */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+h2 {
+    animation: slideInLeft 0.8s ease-out;
+}
+
+/* Shimmer Effect for Loading */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.loading-shimmer {
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(
+        to right,
+        #1e293b 0%,
+        #334155 20%,
+        #1e293b 40%,
+        #1e293b 100%
+    );
+    background-size: 1000px 100%;
+}
+
+/* Scroll Reveal Animation */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Page Load Animation */
+@keyframes pageLoad {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+body {
+    animation: pageLoad 0.5s ease-out;
+}
+
+/* Carousel Dots Animation */
+.carousel-dot {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-dot:hover {
+    transform: scale(1.3);
+}
+
+.carousel-dot.active {
+    animation: pulse 2s infinite;
+}
+
+/* Search Input Focus Animation */
+.search-input:focus {
+    animation: inputFocus 0.3s ease-out;
+}
+
+@keyframes inputFocus {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Mobile Menu Slide */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mobile-menu.active {
+    animation: slideInDown 0.3s ease-out;
+}
+
+.mobile-menu-link {
+    animation: fadeInUp 0.3s ease-out forwards;
+    animation-delay: calc(var(--link-delay) * 0.05s);
+    opacity: 0;
+}
+
+.mobile-menu-link:nth-child(1) { --link-delay: 1; }
+.mobile-menu-link:nth-child(2) { --link-delay: 2; }
+.mobile-menu-link:nth-child(3) { --link-delay: 3; }
+.mobile-menu-link:nth-child(4) { --link-delay: 4; }
+.mobile-menu-link:nth-child(5) { --link-delay: 5; }
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* ============================================
+   AUTH PAGE LIGHT MODE
+   ============================================ */
+
+/* Auth Form Light Mode */
+body.light-mode #loginForm,
+body.light-mode #registerForm {
+    background: #ffffff !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode #loginForm h2,
+body.light-mode #registerForm h2 {
+    color: #0f172a !important;
+}
+
+body.light-mode #loginForm label,
+body.light-mode #registerForm label {
+    color: #475569 !important;
+}
+
+body.light-mode #loginForm input,
+body.light-mode #registerForm input {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+body.light-mode #loginForm input:focus,
+body.light-mode #registerForm input:focus {
+    border-color: #3b82f6 !important;
+    background: #ffffff !important;
+}
+
+body.light-mode #loginForm .text-gray-400,
+body.light-mode #registerForm .text-gray-400 {
+    color: #64748b !important;
+}
+
+body.light-mode #loginForm button:not(.auth-btn):not(.text-blue-500),
+body.light-mode #registerForm button:not(.auth-btn):not(.text-blue-500) {
+    color: #ffffff !important;
+}
+
+body.light-mode .text-blue-500 {
+    color: #3b82f6 !important;
+}
+
+/* Social Login Buttons Light Mode */
+body.light-mode #googleLogin {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+}
+
+body.light-mode #googleLogin:hover {
+    background: #b91c1c !important;
+}
+
+body.light-mode #facebookLogin {
+    background: #1e40af !important;
+    color: #ffffff !important;
+}
+
+body.light-mode #facebookLogin:hover {
+    background: #1e3a8a !important;
+}
+
+body.light-mode #githubLogin {
+    background: #374151 !important;
+    color: #ffffff !important;
+}
+
+body.light-mode #githubLogin:hover {
+    background: #1f2937 !important;
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test i18n</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-8">
+    <div class="container mx-auto">
+        <h1 class="text-4xl font-bold mb-8">🌍 Language System Test</h1>
+        
+        <div class="bg-slate-900 p-8 rounded-xl mb-8">
+            <h2 class="text-2xl font-bold mb-4">Current Language: <span id="currentLang"></span></h2>
+            <button onclick="window.setLanguage('en')" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg mr-4">
+                English
+            </button>
+            <button onclick="window.setLanguage('ar')" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg">
+                العربية
+            </button>
+        </div>
+
+        <div class="bg-slate-900 p-8 rounded-xl">
+            <h2 class="text-2xl font-bold mb-4">Translated Text:</h2>
+            <div class="space-y-4">
+                <p><strong>nav.home:</strong> <span data-i18n="nav.home">Home</span></p>
+                <p><strong>nav.products:</strong> <span data-i18n="nav.products">All Products</span></p>
+                <p><strong>products.featured:</strong> <span data-i18n="products.featured">Featured Products</span></p>
+                <p><strong>cart.added:</strong> <span data-i18n="cart.added">Added to cart!</span></p>
+                <p><strong>categories.title:</strong> <span data-i18n="categories.title">Shop by Category</span></p>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-slate-900 p-8 rounded-xl">
+            <h2 class="text-2xl font-bold mb-4">Direction Test:</h2>
+            <p>Current direction: <strong id="dirTest"></strong></p>
+            <p class="mt-4">This text should align based on language direction.</p>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script>
+        function updateInfo() {
+            document.getElementById('currentLang').textContent = window.getCurrentLang();
+            document.getElementById('dirTest').textContent = document.documentElement.dir || 'ltr';
+        }
+        
+        // Update on load
+        updateInfo();
+        
+        // Update on language change
+        window.addEventListener('languageChanged', updateInfo);
+    </script>
+</body>
+</html>
