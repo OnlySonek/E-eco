@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Products - Media Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-950 text-white p-8">
+    <div class="container mx-auto">
+        <h1 class="text-4xl font-bold mb-8">Product Database Test</h1>
+        
+        <!-- Search Bar -->
+        <input type="text" id="searchInput" placeholder="Search 100 products..." 
+            class="w-full px-6 py-4 bg-slate-900 text-white rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition mb-8">
+        
+        <!-- Product Count -->
+        <p id="productCount" class="text-xl mb-6"></p>
+        
+        <!-- Products Grid -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </div>
+
+    <script type="module">
+        import { products, totalProducts } from './js/products-data.js';
+        
+        console.log(`📦 Loaded ${totalProducts} products`);
+        
+        let searchTerm = '';
+        
+        // Render products using .map()
+        function renderProducts() {
+            const filtered = products.filter(p => 
+                searchTerm === '' || 
+                p.name.toLowerCase().includes(searchTerm) ||
+                p.category.toLowerCase().includes(searchTerm) ||
+                p.description.toLowerCase().includes(searchTerm)
+            );
+            
+            const grid = document.getElementById('product-grid');
+            const count = document.getElementById('productCount');
+            
+            count.textContent = `Showing ${filtered.length} of ${totalProducts} products`;
+            
+            grid.innerHTML = filtered.map(product => `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.name}" loading="lazy">
+                    <div class="product-card-content">
+                        <h3>${product.name}</h3>
+                        <p class="text-gray-400 text-sm mb-2">${product.category}</p>
+                        <div class="price">$${product.price.toLocaleString()}</div>
+                        <button class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            console.log(`✅ Rendered ${filtered.length} products`);
+        }
+        
+        // Instant search with input event
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderProducts();
+            console.log(`🔍 Search: "${searchTerm}" - ${products.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) ||
+                p.category.toLowerCase().includes(searchTerm) ||
+                p.description.toLowerCase().includes(searchTerm)
+            ).length} results`);
+        });
+        
+        // Initial render
+        renderProducts();
+    </script>
+</body>
+</html>

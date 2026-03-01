@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Media</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-950 text-white">
+    <!-- Navbar -->
+   <nav class="navbar-glass">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-2">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                            <path d="M8 12L16 8L24 12V20L16 24L8 20V12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <defs>
+                                <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#3b82f6"/>
+                                    <stop offset="100%" stop-color="#8b5cf6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Media</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="products.html" class="nav-link">All Products</a>
+                    <a href="products.html?category=laptop" class="nav-link">PC Builder</a>
+                    <a href="products.html" class="nav-link">Deals</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+                    <div class="relative w-full">
+                        <input 
+                            type="text" 
+                            id="globalSearch" 
+                            placeholder="Search products..." 
+                            class="search-input"
+                        >
+                        <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Side Icons -->
+                <div class="flex items-center space-x-4">
+                    <!-- Cart Icon -->
+                    <a href="cart.html" class="nav-icon-btn">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <span id="cartCount" class="cart-badge">0</span>
+                    </a>
+
+                    <!-- Auth/Profile -->
+                    <a href="auth.html" id="authLink" class="auth-btn">
+                        Login
+                    </a>
+                    <a href="profile.html" id="profileLink" class="hidden profile-link">
+                        <img id="userAvatar" src="" alt="Profile" class="user-avatar">
+                        <span id="userNameDisplay" class="hidden lg:inline-block ml-2 text-sm font-medium"></span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" class="lg:hidden nav-icon-btn">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search (Below navbar on mobile) -->
+            <div class="md:hidden mt-3">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="mobileGlobalSearch" 
+                        placeholder="Search products..." 
+                        class="search-input"
+                    >
+                    <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu">
+            <div class="container mx-auto px-4 py-4">
+                <a href="index.html" class="mobile-menu-link">Home</a>
+                <a href="products.html" class="mobile-menu-link">All Products</a>
+                <a href="products.html?category=laptop" class="mobile-menu-link">PC Builder</a>
+                <a href="products.html" class="mobile-menu-link">Deals</a>
+                <a href="contact.html" class="mobile-menu-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+    <div class="pt-24 pb-16 min-h-screen flex items-center">
+        <div class="container mx-auto px-4">
+            <div class="max-w-md mx-auto">
+                <!-- Login Form -->
+                <div id="loginForm" class="bg-slate-900 rounded-2xl p-8 shadow-xl">
+                    <h2 class="text-3xl font-bold mb-6 text-center">Welcome Back</h2>
+                    <form id="loginEmailForm" class="space-y-4">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium">Email</label>
+                            <input type="email" id="loginEmail" required 
+                                class="w-full px-4 py-3 bg-slate-800 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium">Password</label>
+                            <input type="password" id="loginPassword" required 
+                                class="w-full px-4 py-3 bg-slate-800 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="my-6 text-center text-gray-400">or continue with</div>
+
+                    <div class="space-y-3">
+                        <button id="googleLogin" class="w-full py-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold flex items-center justify-center transition">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                            Google
+                        </button>
+                        <button id="facebookLogin" class="w-full py-3 bg-blue-800 hover:bg-blue-900 rounded-lg font-semibold flex items-center justify-center transition">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                            Facebook
+                        </button>
+                        <button id="githubLogin" class="w-full py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold flex items-center justify-center transition">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            GitHub
+                        </button>
+                    </div>
+
+                    <p class="text-center mt-6 text-gray-400">
+                        Don't have an account? 
+                        <button id="showRegister" class="text-blue-500 hover:underline">Sign up</button>
+                    </p>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" class="hidden bg-slate-900 rounded-2xl p-8 shadow-xl">
+                    <h2 class="text-3xl font-bold mb-6 text-center">Create Account</h2>
+                    <form id="registerEmailForm" class="space-y-4">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium">Email</label>
+                            <input type="email" id="registerEmail" required 
+                                class="w-full px-4 py-3 bg-slate-800 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium">Password</label>
+                            <input type="password" id="registerPassword" required 
+                                class="w-full px-4 py-3 bg-slate-800 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium">Confirm Password</label>
+                            <input type="password" id="registerConfirmPassword" required 
+                                class="w-full px-4 py-3 bg-slate-800 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <p class="text-center mt-6 text-gray-400">
+                        Already have an account? 
+                        <button id="showLogin" class="text-blue-500 hover:underline">Sign in</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Bulk Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-white flex items-center justify-center min-h-screen">
+    <div class="max-w-md w-full bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl text-center">
+        <h1 class="text-2xl font-bold mb-6">Upload Products to Firestore</h1>
+        
+        <div class="bg-yellow-900/20 border border-yellow-700/50 p-4 rounded-xl mb-6 text-sm text-yellow-200">
+            ⚠️ This will upload 100 products to your 'products' collection.
+        </div>
+
+        <button id="startUpload" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold text-lg transition-all active:scale-95">
+            Start Upload
+        </button>
+
+        <div id="progressStatus" class="mt-6 hidden">
+            <div class="w-full bg-gray-800 rounded-full h-2.5 mb-2">
+                <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+            <p id="statusText" class="text-gray-400 text-sm italic">Initializing...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { firebaseConfig } from "./js/config.js"; 
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const uploadBtn = document.getElementById('startUpload');
+        const progressDiv = document.getElementById('progressStatus');
+        const progressBar = document.getElementById('progressBar');
+        const statusText = document.getElementById('statusText');
+
+        // دالة لتوليد منتجات تجريبية
+        const generateProducts = () => {
+            const categories = ['laptop', 'monitor', 'mouse', 'keyboard', 'case'];
+            let items = [];
+            categories.forEach(cat => {
+                for(let i=1; i<=20; i++) {
+                    items.push({
+                        name: `${cat.charAt(0).toUpperCase() + cat.slice(1)} Pro Gen-${i}`,
+                        price: Math.floor(Math.random() * 1000) + 50,
+                        category: cat,
+                        description: `High performance ${cat} for professional gaming and work.`,
+                        createdAt: new Date()
+                    });
+                }
+            });
+            return items;
+        };
+
+        uploadBtn.addEventListener('click', async () => {
+            uploadBtn.disabled = true;
+            uploadBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            progressDiv.classList.remove('hidden');
+
+            const products = generateProducts();
+            let uploadedCount = 0;
+
+            for (const product of products) {
+                try {
+                    await addDoc(collection(db, "products"), product);
+                    uploadedCount++;
+                    
+                    // تحديث شريط التحميل
+                    const percent = (uploadedCount / products.length) * 100;
+                    progressBar.style.width = `${percent}%`;
+                    statusText.innerText = `Uploaded ${uploadedCount} of 100 products...`;
+                } catch (error) {
+                    console.error("Error:", error);
+                    statusText.innerText = "❌ Error occurred! Check Rules.";
+                    break;
+                }
+            }
+
+            if(uploadedCount === 100) {
+                statusText.innerHTML = "✅ <span class='text-green-400 font-bold'>Upload Complete!</span> Refresh your shop.";
+                uploadBtn.innerText = "Done!";
+            }
+        });
+    </script>
+</body>
+</html>

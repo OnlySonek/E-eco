@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-white p-8">
+    <h1 class="text-3xl font-bold mb-4">🔍 Profile Debug</h1>
+    <div id="log" class="bg-slate-900 p-4 rounded mb-4"></div>
+    <div id="userInfo" class="bg-slate-800 p-4 rounded"></div>
+
+    <script type="module">
+        const log = document.getElementById('log');
+        const userInfo = document.getElementById('userInfo');
+        
+        function addLog(msg, color = 'white') {
+            log.innerHTML += `<p style="color: ${color}">${msg}</p>`;
+            console.log(msg);
+        }
+
+        try {
+            addLog('1️⃣ Importing Firebase Auth...', 'yellow');
+            const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+            const { auth } = await import('./js/firebase-init.js');
+            addLog('✅ Firebase Auth imported', 'lime');
+            
+            addLog('2️⃣ Checking auth state...', 'yellow');
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    addLog(`✅ User logged in: ${user.email}`, 'lime');
+                    userInfo.innerHTML = `
+                        <h2 class="text-xl font-bold mb-2">User Info:</h2>
+                        <p>Email: ${user.email}</p>
+                        <p>Display Name: ${user.displayName || 'Not set'}</p>
+                        <p>Photo URL: ${user.photoURL || 'Not set'}</p>
+                        <p>UID: ${user.uid}</p>
+                        <p>Created: ${user.metadata.creationTime}</p>
+                        <a href="profile.html" class="mt-4 inline-block px-4 py-2 bg-blue-600 rounded">Go to Profile</a>
+                    `;
+                } else {
+                    addLog('❌ No user logged in', 'red');
+                    userInfo.innerHTML = `
+                        <p class="text-red-400">You need to sign in first</p>
+                        <a href="auth.html" class="mt-4 inline-block px-4 py-2 bg-blue-600 rounded">Sign In</a>
+                    `;
+                }
+            });
+            
+        } catch (error) {
+            addLog(`❌ ERROR: ${error.message}`, 'red');
+            console.error(error);
+        }
+    </script>
+</body>
+</html>

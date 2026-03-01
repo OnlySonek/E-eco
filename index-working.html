@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media - Premium Tech Hardware Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-950 text-white">
+    <!-- Professional Navbar -->
+    <nav class="navbar-glass">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Media</span>
+                </a>
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="products.html" class="nav-link">All Products</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="cart.html" class="nav-icon-btn">
+                        🛒 <span id="cartCount" class="cart-badge">0</span>
+                    </a>
+                    <a href="auth.html" class="auth-btn">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-24 pb-12">
+        <div class="container mx-auto px-4">
+            <div class="h-[400px] rounded-2xl overflow-hidden bg-gradient-to-r from-blue-900 to-slate-900 flex items-center justify-center">
+                <div class="text-center">
+                    <h1 class="text-5xl md:text-7xl font-bold mb-4">Premium Tech Store</h1>
+                    <p class="text-xl mb-8">Best deals on laptops, monitors & more</p>
+                    <a href="products.html" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg inline-block transition">Shop Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-8 text-center">Featured Products</h2>
+            <div id="featuredProducts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center py-12 col-span-full">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p class="text-gray-400">Loading products...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-8 mt-16 border-t border-slate-800">
+        <div class="container mx-auto px-4 text-center text-gray-400">
+            <p>&copy; 2024 Media. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Import modules
+        import { collection, getDocs, limit, query } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { db } from './js/firebase-init.js';
+        import { getProductImage } from './js/product-images.js';
+        import { updateCartCounter } from './js/main.js';
+
+        // Fetch and render products
+        async function loadProducts() {
+            try {
+                console.log('🏠 Loading products...');
+                const q = query(collection(db, 'products'), limit(8));
+                const snapshot = await getDocs(q);
+                
+                const products = [];
+                snapshot.forEach((doc) => {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
+                
+                console.log(`✅ Loaded ${products.length} products`);
+                
+                const container = document.getElementById('featuredProducts');
+                if (products.length === 0) {
+                    container.innerHTML = '<div class="col-span-full text-center py-12 text-red-400">No products found. <a href="admin-upload.html" class="text-blue-400 underline">Upload products</a></div>';
+                    return;
+                }
+                
+                container.innerHTML = products.map((p, i) => {
+                    const img = getProductImage(p.category.toLowerCase(), i);
+                    return `
+                        <div class="product-card cursor-pointer" onclick="location.href='product-details.html?id=${p.id}'">
+                            <img src="${img}" alt="${p.name}" loading="lazy" class="w-full h-48 object-cover rounded-t-lg">
+                            <div class="product-card-content p-4">
+                                <h3 class="text-lg font-semibold mb-2">${p.name}</h3>
+                                <div class="price text-xl font-bold text-blue-400 mb-3">$${p.price.toLocaleString()}</div>
+                                <button onclick="event.stopPropagation(); addToCart('${p.id}', '${p.name}', ${p.price}, '${p.category}')" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                document.getElementById('featuredProducts').innerHTML = 
+                    `<div class="col-span-full text-center py-12 text-red-400">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Add to cart function
+        window.addToCart = function(id, name, price, category) {
+            let cart = JSON.parse(localStorage.getItem('media_cart')) || [];
+            const existing = cart.findIndex(item => item.id === id);
+            
+            if (existing > -1) {
+                cart[existing].quantity += 1;
+            } else {
+                cart.push({ id, name, price, category, quantity: 1 });
+            }
+            
+            localStorage.setItem('media_cart', JSON.stringify(cart));
+            updateCartCounter();
+            
+            // Show toast
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-blue-600 text-white p-4 rounded-lg z-50';
+            toast.textContent = `✅ Added ${name} to cart!`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        };
+
+        // Initialize
+        loadProducts();
+        updateCartCounter();
+    </script>
+</body>
+</html>

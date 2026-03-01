@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Firestore Connection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+    <div class="max-w-2xl w-full mx-auto p-8">
+        <div class="bg-gray-800 rounded-lg shadow-xl p-8">
+            <h1 class="text-3xl font-bold mb-6 text-center">Test Firestore Connection</h1>
+            
+            <button 
+                onclick="testConnection()" 
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 mb-4">
+                Test Connection
+            </button>
+            
+            <div id="result" class="mt-6 p-4 bg-gray-700 rounded text-center"></div>
+            
+            <div class="mt-6 text-sm text-gray-400">
+                <p>This will test if your Firebase/Firestore connection is working.</p>
+                <p class="mt-2">Check the browser console (F12) for detailed logs.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { firebaseConfig } from './js/config.js';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        console.log('✅ Firebase initialized');
+        console.log('Project ID:', firebaseConfig.projectId);
+
+        window.testConnection = async function() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="text-yellow-400">Testing connection...</div>';
+            
+            try {
+                console.log('Testing Firestore connection...');
+                const querySnapshot = await getDocs(collection(db, 'products'));
+                const count = querySnapshot.size;
+                
+                if (count === 0) {
+                    resultDiv.innerHTML = `
+                        <div class="text-yellow-400 text-lg font-bold mb-2">✅ Connection Successful!</div>
+                        <div class="text-gray-300">But no products found in database.</div>
+                        <div class="text-sm text-gray-400 mt-2">Ready to upload products!</div>
+                    `;
+                    console.log('✅ Firestore connected, but products collection is empty');
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="text-green-400 text-lg font-bold mb-2">✅ Connection Successful!</div>
+                        <div class="text-gray-300">Found ${count} products in database.</div>
+                    `;
+                    console.log(`✅ Firestore connected, found ${count} products`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="text-red-400 text-lg font-bold mb-2">❌ Connection Failed</div>
+                    <div class="text-gray-300 text-sm">${error.message}</div>
+                `;
+                console.error('❌ Firestore connection error:', error);
+            }
+        };
+    </script>
+</body>
+</html>
