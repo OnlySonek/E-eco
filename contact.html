@@ -245,10 +245,27 @@
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // Initialize EmailJS
-        (function(){
-            emailjs.init("YOUR_PUBLIC_KEY"); // سنضيف المفتاح لاحقاً
-        })();
+        // ============================================
+        // 📧 EmailJS Configuration
+        // ============================================
+        
+        // ✅ Step 1: Initialize EmailJS with Public Key
+        // Get your Public Key from: https://dashboard.emailjs.com/admin/account
+        const PUBLIC_KEY = "9iZTJo2XIqEpCUS4s"; // ✅ تم التحديث
+        
+        if (PUBLIC_KEY === "YOUR_PUBLIC_KEY" || PUBLIC_KEY === "") {
+            // تحذير للمطور فقط
+            setTimeout(() => {
+                alert('⚠️ تحذير للمطور:\n\nEmailJS غير مكون!\n\nيجب تحديث:\n1. Public Key ✅\n2. Service ID ✅\n3. Template ID ⚠️ ناقص!\n\nفي ملف contact.html\n\nراجع: 🔧_حل_مشكلة_الإيميل.md');
+            }, 1000);
+        } else {
+            emailjs.init(PUBLIC_KEY);
+        }
+        
+        // ✅ Step 2: Set Service ID and Template ID
+        // Get these from: https://dashboard.emailjs.com/admin
+        window.EMAILJS_SERVICE_ID = "service_8w7yjgd";    // ✅ تم التحديث
+        window.EMAILJS_TEMPLATE_ID = "template_e84dwaf"; // ✅ تم التحديث
     </script>
     
     <script type="module" src="js/main.js"></script>

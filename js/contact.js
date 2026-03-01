@@ -1,4 +1,4 @@
-// Contact Page Module with EmailJS Integration
+// Contact Page Module with EmailJS Integration + Alert-Based Debugging
 import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { db, setupAuthObserver } from './firebase-init.js';
 import { updateCartCounter } from './main.js';
@@ -6,11 +6,9 @@ import { showToast } from './utils.js';
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('📧 Contact page initializing...');
     setupAuthObserver();
     updateCartCounter();
     setupContactForm();
-    console.log('✅ Contact page ready');
 });
 
 // Setup contact form
@@ -19,6 +17,7 @@ function setupContactForm() {
     const formStatus = document.getElementById('formStatus');
     
     form.addEventListener('submit', async (e) => {
+        // ✅ منع إعادة تحميل الصفحة
         e.preventDefault();
         
         const name = document.getElementById('contactName').value;
@@ -37,6 +36,9 @@ function setupContactForm() {
             const emailSent = await sendEmailViaEmailJS(name, email, subject, message);
             
             if (emailSent) {
+                // ✅ Alert نجاح
+                alert('✅ تم إرسال الرسالة بنجاح!\n\nEmail sent successfully to:\nabdelrhmansherif140@gmail.com\n\nسنرد عليك في أقرب وقت');
+                
                 // Also save to Firestore for backup
                 try {
                     await addDoc(collection(db, 'messages'), {
@@ -47,9 +49,8 @@ function setupContactForm() {
                         status: 'unread',
                         createdAt: new Date().toISOString()
                     });
-                    console.log('✅ Message also saved to Firestore');
                 } catch (firestoreError) {
-                    console.warn('⚠️ Could not save to Firestore:', firestoreError);
+                    // Silent fail for Firestore
                 }
                 
                 // Show success message
@@ -68,8 +69,6 @@ function setupContactForm() {
                 // Reset form
                 form.reset();
                 
-                console.log('✅ Message sent to email successfully');
-                
                 // Hide success message after 7 seconds
                 setTimeout(() => {
                     formStatus.classList.add('hidden');
@@ -79,24 +78,53 @@ function setupContactForm() {
             }
             
         } catch (error) {
-            console.error('❌ Error sending message:', error);
+            // ✅ Alert خطأ مفصل مع معلومات التشخيص
+            let errorDetails = '❌ فشل إرسال الرسالة!\n\n';
+            errorDetails += '📋 تفاصيل الخطأ:\n';
+            errorDetails += error.message + '\n\n';
+            
+            // تحليل نوع الخطأ
+            if (error.message.includes('Public Key') || error.message.includes('not initialized')) {
+                errorDetails += '🔑 المشكلة: Public Key غير صحيح\n';
+                errorDetails += '✅ الحل: تحقق من Public Key في contact.html';
+            } else if (error.message.includes('Service')) {
+                errorDetails += '🔧 المشكلة: Service ID غير صحيح\n';
+                errorDetails += '✅ الحل: تحقق من Service ID في contact.html';
+            } else if (error.message.includes('Template')) {
+                errorDetails += '📝 المشكلة: Template ID غير صحيح\n';
+                errorDetails += '✅ الحل: تحقق من Template ID في contact.html';
+            } else if (error.message.includes('not configured')) {
+                errorDetails += '⚙️ المشكلة: لم يتم تكوين EmailJS\n';
+                errorDetails += '✅ الحل: راجع ملف 🔧_حل_مشكلة_الإيميل.md';
+            } else if (error.message.includes('Network')) {
+                errorDetails += '🌐 المشكلة: مشكلة في الاتصال\n';
+                errorDetails += '✅ الحل: تحقق من الإنترنت وحاول مرة أخرى';
+            } else {
+                errorDetails += '❓ خطأ غير معروف\n';
+                errorDetails += '✅ الحل: راجع التكوين في contact.html';
+            }
+            
+            errorDetails += '\n\n📧 أو تواصل معنا مباشرة:\nabdelrhmansherif140@gmail.com';
+            
+            alert(errorDetails);
             
             // Show error message
             formStatus.classList.remove('hidden');
             formStatus.innerHTML = `
                 <div class="bg-red-600 text-white p-4 rounded-lg">
                     <p class="font-semibold">❌ Error sending message</p>
-                    <p class="text-sm mt-1">${error.message}</p>
-                    <p class="text-sm mt-2">Please try again or contact us directly at abdelrhmansherif140@gmail.com</p>
+                    <p class="text-sm mt-1"><strong>Error:</strong> ${error.message}</p>
+                    <p class="text-sm mt-2">Please contact us directly at:</p>
+                    <p class="text-sm font-semibold">abdelrhmansherif140@gmail.com</p>
                 </div>
             `;
             
             showToast('Error sending message', 'error');
             
-            // Hide error message after 7 seconds
+            // Hide error message after 10 seconds
             setTimeout(() => {
                 formStatus.classList.add('hidden');
-            }, 7000);
+            }, 10000);
         } finally {
             // Reset button
             submitBtn.textContent = originalText;
@@ -105,16 +133,28 @@ function setupContactForm() {
     });
 }
 
-// Send email using EmailJS
+// Send email using EmailJS with Alert-based debugging
 async function sendEmailViaEmailJS(name, email, subject, message) {
     try {
-        // Check if EmailJS is loaded
+        // 1. Check if EmailJS is loaded
         if (typeof emailjs === 'undefined') {
-            console.error('❌ EmailJS not loaded');
-            return false;
+            throw new Error('EmailJS library not loaded. Check if script is included in contact.html');
         }
         
-        // EmailJS template parameters
+        // 2. Get configuration from window (set in contact.html)
+        const serviceId = window.EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
+        const templateId = window.EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
+        
+        // 3. Check if IDs are configured
+        if (serviceId === 'YOUR_SERVICE_ID' || serviceId === '') {
+            throw new Error('Service ID not configured. Please update contact.html with your EmailJS Service ID');
+        }
+        
+        if (templateId === 'YOUR_TEMPLATE_ID' || templateId === '') {
+            throw new Error('Template ID not configured. Please update contact.html with your EmailJS Template ID');
+        }
+        
+        // 4. Prepare template parameters
         const templateParams = {
             from_name: name,
             from_email: email,
@@ -124,19 +164,22 @@ async function sendEmailViaEmailJS(name, email, subject, message) {
             reply_to: email
         };
         
-        // Send email
-        // Note: You need to replace these with your actual EmailJS credentials
+        // 5. Send email
         const response = await emailjs.send(
-            'YOUR_SERVICE_ID',      // Replace with your EmailJS Service ID
-            'YOUR_TEMPLATE_ID',     // Replace with your EmailJS Template ID
+            serviceId,
+            templateId,
             templateParams
         );
         
-        console.log('✅ EmailJS Response:', response);
-        return response.status === 200;
+        // 6. Check response
+        if (response.status === 200) {
+            return true;
+        } else {
+            throw new Error('Unexpected response status: ' + response.status);
+        }
         
     } catch (error) {
-        console.error('❌ EmailJS Error:', error);
-        return false;
+        // Re-throw with more details
+        throw error;
     }
 }
