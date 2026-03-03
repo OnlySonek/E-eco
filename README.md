@@ -40,6 +40,3 @@ A modern, feature-rich e-commerce platform bend.
 
 Email: abdelrhmansherif140@gmail.com
 
----
-
-Built with ❤️
